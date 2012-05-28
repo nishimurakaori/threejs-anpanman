@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>anpanman</title>
+<script src="Three.js"></script>
+</head>
+<body>
+  <div id="div_canvas" style="text-align:center;">
+
+  <script>
+    var width = 600;
+    var height = 600;
+    var camera, scene, renderer;
+
+    init();
+    animate();
+
+    function init() {
+    
+      //カメラを用意 透視投影
+      var fov    = 80; //画角
+      var aspect = width / height; //縦横比
+      var near   = 1; //クリッピング手前
+      var far    = 1000; //クリッピング奥
+      camera = new THREE.PerspectiveCamera( fov, aspect, near, far );
+      camera.position.z = 500;
+
+      //シーンを用意
+      scene = new THREE.Scene();
+      scene.add(camera);
+
+      //メッシュを作成(ジオメトリーとマテリアル)
+
+      //ジオメトリーを作成
+      var geometry = new THREE.SphereGeometry( 150, 32, 32 );//球体 顔のベース
+      var geometryAka = new THREE.SphereGeometry( 33, 32, 32 );//球体　鼻とほっぺ
+      var geometryKuro = new THREE.SphereGeometry( 18, 32, 32 );//球体　目
+      var geometryMayu = new THREE.TorusGeometry( 30, 5, 150, 120 );//ドーナツ型　まゆげ
+      var geometryKuchi = new THREE.TorusGeometry( 50, 5, 150, 120 );//ドーナツ型　くち
+
+      //マテリアル
+      var material = new THREE.MeshLambertMaterial( { color: 0xdeb887 });//肌色
+      var materialAka = new THREE.MeshLambertMaterial( { color: 0x660000 });//赤
+      var materialKuro = new THREE.MeshLambertMaterial( { color: 0x000000 });//黒
+      var materialMayu = new THREE.MeshLambertMaterial( { color: 0x000000, shading: THREE.FlatShading });//黒
+    
+      //メッシュを作成
+      var cubeMesh = new THREE.Mesh( geometry, material);
+    
+      //鼻、ほっぺ
+      var cubeMeshA1 = new THREE.Mesh( geometryAka, materialAka);
+      var cubeMeshA2 = new THREE.Mesh( geometryAka, materialAka);
+      var cubeMeshA3 = new THREE.Mesh( geometryAka, materialAka);
+      cubeMeshA1.position.x = -53;
+      cubeMeshA3.position.x = 53;
+      cubeMeshA1.position.z = 120;
+      cubeMeshA2.position.z = 150;
+      cubeMeshA3.position.z = 120;
+
+      //目
+      var cubeMeshK1 = new THREE.Mesh( geometryKuro, materialKuro);
+      var cubeMeshK2 = new THREE.Mesh( geometryKuro, materialKuro);
+      cubeMeshK1.position.x = -40;
+      cubeMeshK2.position.x = 40;
+      cubeMeshK1.position.y = 50;
+      cubeMeshK2.position.y = 50;
+      cubeMeshK1.position.z = 130;
+      cubeMeshK2.position.z = 130;
+
+      //まゆ、くち
+      var cubeMeshM1 = new THREE.Mesh( geometryMayu, materialMayu);
+      var cubeMeshM2 = new THREE.Mesh( geometryMayu, materialMayu);
+      var cubeMeshM3 = new THREE.Mesh( geometryKuchi, materialMayu);
+      cubeMeshM1.position.x = -40;
+      cubeMeshM2.position.x = 40;
+      cubeMeshM1.position.y = 80;
+      cubeMeshM2.position.y = 80;
+      cubeMeshM1.position.z = 100;
+      cubeMeshM2.position.z = 100;
+      cubeMeshM1.rotation.x = 120;
+      cubeMeshM2.rotation.x = 120;
+      cubeMeshM3.position.y = -30;
+      cubeMeshM3.rotation.x = -120;
+      cubeMeshM3.position.z = 120;
+
+      //メッシュをシーンに追加
+      scene.add( cubeMesh );
+      scene.add( cubeMeshA1 );
+      scene.add( cubeMeshA2 );
+      scene.add( cubeMeshA3 );
+      scene.add( cubeMeshK1 );
+      scene.add( cubeMeshK2 );
+      scene.add( cubeMeshM1 );
+      scene.add( cubeMeshM2 );
+      scene.add( cubeMeshM3 );
+
+      //光源を作成
+      var directionalLight = new THREE.DirectionalLight( 0xf5deb3, 3 );
+      directionalLight.position.z = 3;
+
+      //光源をシーンに追加
+      scene.add( directionalLight );
+
+      //レンダラーを用意
+      renderer = new THREE.WebGLRenderer();
+      renderer.setSize( width, height );
+
+      //レンダリング
+      renderer.render( scene, camera );
+
+      //トラックボールコントロール
+      div_canvas = document.getElementById( 'div_canvas' );
+      div_canvas.appendChild( renderer.domElement );
+      trackball = new THREE.TrackballControls( camera, renderer.domElement );
+
+    }
+
+    function animate() {
+      // note: three.js includes requestAnimationFrame shim
+      requestAnimationFrame( animate );
+      render();
+    }
+ 
+    function render() {
+      trackball.update();
+      renderer.render( scene, camera );
+    }
+  </script>
+
+</body>
+</html>
