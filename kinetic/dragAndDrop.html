@@ -108,16 +108,14 @@
           strokeWidth: 4
         });
 
-        //center.on("mouseover", function() {
-        flower.on("mouseover", function() {
+        flower.on("mouseover touchstart", function() {
           flower.draggable(true);
           center.setFill("orange");
           flowerLayer.draw();
 
         });
 
-        //center.on("mouseout", function() {
-        flower.on("mouseout", function() {
+        flower.on("mouseout touchend", function() {
           flower.draggable(false);
           center.setFill("yellow");
           flowerLayer.draw();
@@ -140,8 +138,7 @@
           strokeWidth: 4
         });
 
-        flowerEnd.on("mouseover", function() {
-        //centerEnd.on("mouseover", function() {
+        flowerEnd.on("mouseover touchstart", function() {
           flowerEnd.draggable(true);
  
           stem.setStroke("pink");
@@ -157,8 +154,7 @@
           writeMessage(messageLayer, "x: " + x + ", y: " + y);
         });
 
-        flowerEnd.on("mouseout", function() {
-        //centerEnd.on("mouseout", function() {
+        flowerEnd.on("mouseout touchend", function() {
           flowerEnd.draggable(false);
           centerEnd.setFill("yellow");
           flowerEndLayer.draw();
