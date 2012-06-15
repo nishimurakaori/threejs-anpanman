@@ -1,0 +1,207 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+      canvas {
+        border: 1px solid #9C9898;
+      }
+    </style>
+    <script src="http://www.html5canvastutorials.com/libraries/kinetic-v3.9.7.js"></script>
+    <script>
+      function writeMessage(messageLayer, message) {
+        var context = messageLayer.getContext();
+        messageLayer.clear();
+        context.font = "18pt Calibri";
+        context.fillStyle = "black";
+        context.fillText(message, 10, 25);
+      }
+
+
+      window.onload = function() {
+        var stage = new Kinetic.Stage({
+          container: "container",
+          width: 578,
+          height: 400
+        });
+        var layer = new Kinetic.Layer();
+        var rectX = stage.getWidth() / 2 - 50;
+        var rectY = stage.getHeight() / 2 - 25;
+
+        var flowerLayer = new Kinetic.Layer();
+        var flowerEndLayer = new Kinetic.Layer();
+        var lineLayer = new Kinetic.Layer();
+
+        var messageLayer = new Kinetic.Layer();
+
+        var flower = new Kinetic.Group({
+            x: 100,
+            y: 100
+        });
+
+        var flowerEnd = new Kinetic.Group({
+            x: 200,
+            y: 200
+        });
+
+
+        //画像
+        var imageObj = new Image();
+        imageObj.src = "../image/User_black.png";
+        var image = new Kinetic.Image({
+            x: -40,
+            y: -50,
+            image: imageObj
+
+            //width: 106,
+            //height: 118
+          });
+
+        //画像2
+        var imageObj2 = new Image();
+        imageObj2.src = "../image/User_black.png";
+        var image2 = new Kinetic.Image({
+            x: -40,
+            y: -50,
+            image: imageObj2
+          });
+
+
+
+
+        // build stem
+        //茎
+        var stem = new Kinetic.Line({
+        //var stem = new Kinetic.Polygon({
+          strokeWidth: 10,
+          stroke: "green",
+          points: [{
+            x: flower.getX(),
+            y: flower.getY()
+          }, {
+            x: flowerEnd.getX(),
+            y: flowerEnd.getY()
+          }]
+        });
+
+        stem.on("mouseover", function() {
+          this.setStroke("blue");
+          this.setStrokeWidth(20);
+          
+          lineLayer.saveData();
+          lineLayer.draw();
+
+          writeMessage(messageLayer, "mouseover stem");
+        });
+
+        //まるいところ
+        // build center
+        var center = new Kinetic.Circle({
+          x: 0,
+          y: 0,
+          radius: 20,
+          fill: "yellow",
+          stroke: "black",
+          strokeWidth: 4
+        });
+
+        //center.on("mouseover", function() {
+        flower.on("mouseover", function() {
+          flower.draggable(true);
+          center.setFill("orange");
+          flowerLayer.draw();
+
+        });
+
+        //center.on("mouseout", function() {
+        flower.on("mouseout", function() {
+          flower.draggable(false);
+          center.setFill("yellow");
+          flowerLayer.draw();
+
+        });
+
+        flower.on("dragmove", function() {
+          stem.attrs.points[0] = this.getPosition();
+          lineLayer.draw();
+
+        });
+
+        // build centerEnd
+        var centerEnd = new Kinetic.Circle({
+          x: 0,
+          y: 0,
+          radius: 20,
+          fill: "yellow",
+          stroke: "black",
+          strokeWidth: 4
+        });
+
+        flowerEnd.on("mouseover", function() {
+        //centerEnd.on("mouseover", function() {
+          flowerEnd.draggable(true);
+ 
+          stem.setStroke("pink");
+          stem.setStrokeWidth(20);
+          lineLayer.draw();
+
+          centerEnd.setFill("orange");
+          flowerEndLayer.draw();
+          
+          var mousePos = stage.getMousePosition();
+          var x = mousePos.x - 190;
+          var y = mousePos.y - 40;
+          writeMessage(messageLayer, "x: " + x + ", y: " + y);
+        });
+
+        flowerEnd.on("mouseout", function() {
+        //centerEnd.on("mouseout", function() {
+          flowerEnd.draggable(false);
+          centerEnd.setFill("yellow");
+          flowerEndLayer.draw();
+
+          stem.setStroke("green");
+          stem.setStrokeWidth(10);
+          lineLayer.draw();
+        });
+
+        flowerEnd.on("dragmove", function() {
+          stem.attrs.points[1] = this.getPosition();
+          lineLayer.draw();
+        });
+
+
+        lineLayer.add(stem);
+
+        //レイヤーは書いた順
+        flower.add(center);
+        flower.add(image);
+        
+        flowerLayer.add(flower);
+        stage.add(lineLayer);
+        stage.add(flowerLayer);
+
+        flowerEnd.add(centerEnd);
+        flowerEnd.add(image2);
+
+        flowerEndLayer.add(flowerEnd);
+        stage.add(flowerEndLayer);
+
+        stage.add(messageLayer);
+
+
+
+
+
+
+      };
+
+    </script>
+  </head>
+  <body onmousedown="return false;">
+    <div id="container"></div>
+  </body>
+</html>
